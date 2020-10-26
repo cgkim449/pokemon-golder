@@ -3,31 +3,30 @@ package pokemon.golder.server.pms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 import pokemon.golder.server.pms.domain.Member;
 import pokemon.golder.server.util.Prompt;
 
 public class SignInCommand implements Command {
 
-  Member member;
   List<Member> memberList;
 
-  public SignInCommand (Member member, List<Member> memberList) {
-    this.member = member;
+  public SignInCommand (List<Member> memberList) {
     this.memberList = memberList;
   }
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in) {
+  public void execute(PrintWriter out, BufferedReader in, 
+      Map<Long,Member> signInContext, long clientId, Member member1) {
     try {
-      Member member1;
+      Member member;
 
       out.println("[로그인] ");
 
-      if (member.getSignIn() == 1) {
+      if (member1.getSignIn() == 1) {
         out.println("이미 로그인 되어있습니다.");
         out.println(" ");
-        out.println();
-        out.flush();
+        signInContext.put(clientId, member1);
         return;
       }
 
@@ -41,26 +40,25 @@ public class SignInCommand implements Command {
           } else {
             out.println("로그인을 취소합니다.");
             out.println(" ");
-            out.flush();
+            signInContext.put(clientId, member1);
             return;
           }
         } else {
-          member1 = findByName(name);
+          member = findByName(name);
           break;
         }
       }
 
 
       while(true) {
-        if (member1.getPassword() != Prompt.inputInt("비밀번호 : ", out, in)) {
+        if (member.getPassword() != Prompt.inputInt("비밀번호 : ", out, in)) {
           String response = Prompt.inputString(
               "비밀번호가 틀렸습니다. 계속하시겠습니까?(y/N):", out, in);
           if (response.equalsIgnoreCase("y")) {
             continue;
           } else {
             out.println("로그인을 취소합니다.");
-            out.println(" ");
-            out.flush();
+            signInContext.put(clientId, member1);
             return;
           }
         } else {
@@ -68,14 +66,13 @@ public class SignInCommand implements Command {
         }
       }
       out.println(" ");
-      out.printf("%s님 안녕하세요.\n", member1.getName());
-      out.println(" ");
-
+      out.printf("%s님 안녕하세요.", member.getName());
       member.setSignIn(1);
-      member.setName(member1.getName());
-      member.setNo(member1.getNo());
-      member.setAdmin((member1.getNo()));
-
+      member1.setSignIn(1);
+      member1.setName(member.getName());
+      member1.setNo(member.getNo());
+      member1.setAdmin((member.getAdmin()));
+      signInContext.put(clientId, member1);
     } catch (Exception e) {
       out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
     }

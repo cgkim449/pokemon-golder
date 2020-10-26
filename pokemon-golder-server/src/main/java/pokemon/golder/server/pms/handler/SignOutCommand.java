@@ -3,46 +3,46 @@ package pokemon.golder.server.pms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 import pokemon.golder.server.pms.domain.Member;
 import pokemon.golder.server.util.Prompt;
 
 public class SignOutCommand implements Command {
 
-  Member member;
   List<Member> memberList;
 
-  public SignOutCommand (Member member, List<Member> memberList) {
-    this.member = member;
+  public SignOutCommand (List<Member> memberList) {
     this.memberList = memberList;
   }
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in) {
+  public void execute(PrintWriter out, BufferedReader in, 
+      Map<Long,Member> signInContext, long clientId, Member member1) {
     try {
-      //      if (member.getSignIn() == 0) {
-      //        out.println("이미 로그아웃 되어있습니다.");
-      //        out.println(" ");
-      //        out.println();
-      //        out.flush();
-      //        return;
-      //      }
+      if (member1.getSignIn() == 0) {
+        out.println("이미 로그아웃 되어있습니다.");
+        out.println(" ");
+        signInContext.put(clientId, member1);
+        return;
+      }
 
       String request = Prompt.inputString("로그아웃하시겠습니까? (y/N) : ", out, in);
       out.println(" ");
 
       if (request.equalsIgnoreCase("y")) {
+        Member member = findByName(member1.getName());
         member.setSignIn(0);
-        member = findByName(member.getName());
-        member.setSignIn(0);
+        member1.setSignIn(0);
+        member1.setAdmin(0);
+        member1.setNo(0);
+        member1.setName(null);
         out.println("로그아웃 되었습니다.");
         out.println(" ");
-        out.println();
-        out.flush();
+        signInContext.put(clientId, member1);
       } else {
         out.println("로그아웃이 취소되었습니다.");
         out.println(" ");
-        out.println();
-        out.flush();
+        signInContext.put(clientId, member1);
       }
 
     } catch (Exception e) {

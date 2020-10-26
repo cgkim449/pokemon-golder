@@ -40,22 +40,20 @@ public class RequestMappingListener implements ApplicationContextListener {
   @Override
   public void contextInitialized(Map<String,Object> context) {
     // 옵저버가 작업한 결과를 맵에서 꺼낸다.
-    Member member = (Member) context.get("member");
-
     List<Board> boardList = (List<Board>) context.get("boardList");
     List<Member> memberList = (List<Member>) context.get("memberList");
     List<Project> projectList = (List<Project>) context.get("projectList");
     List<Task> taskList = (List<Task>) context.get("taskList");
 
-    MemberListCommand memberListCommand = new MemberListCommand(memberList,member);
-    context.put("/member/add", new MemberAddCommand(memberList,member));
+    MemberListCommand memberListCommand = new MemberListCommand(memberList);
+    context.put("/member/add", new MemberAddCommand(memberList));
     context.put("/member/list", memberListCommand);
-    context.put("/member/detail", new MemberDetailCommand(memberList,member));
-    context.put("/member/update", new MemberUpdateCommand(memberList,member));
-    context.put("/member/delete", new MemberDeleteCommand(memberList,member));
+    context.put("/member/detail", new MemberDetailCommand(memberList));
+    context.put("/member/update", new MemberUpdateCommand(memberList));
+    context.put("/member/delete", new MemberDeleteCommand(memberList));
 
-    context.put("/signIn", new SignInCommand(member, memberList));
-    context.put("/signOut", new SignOutCommand(member, memberList));
+    context.put("/signIn", new SignInCommand(memberList));
+    context.put("/signOut", new SignOutCommand(memberList));
     context.put("/signUp", new SignUpCommand(memberList));
 
 

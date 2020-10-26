@@ -11,6 +11,9 @@ public class ClientApp {
   static String host;
   static int port;
   static int init = 0;
+  // 서버에서 이 클라이언트를 구분할 때 사용하는 번호이다.
+  // => 0 번으로 서버에 요청하면, 서버가 신규 번호를 발급해 줄 것이다.
+  static long clientId = 0;
 
   public static void main(String[] args) {
     if (args.length != 2) {
@@ -22,11 +25,13 @@ public class ClientApp {
     host = args[0];
     port = Integer.parseInt(args[1]);
 
+
     while (true) {
-      if (init == 0) { // 서버 초기화면 처음에만 딱 한번 수신
-        init++;
-        request("init");
-      }
+      //      if (init == 0) { // 서버 초기화면 처음에만 딱 한번 수신
+      //        init++;
+      //        request("init");
+      //      }
+
       String input = Prompt.inputString("명령> ");
       if (input.equalsIgnoreCase("quit"))
         break;
@@ -41,7 +46,7 @@ public class ClientApp {
 
   }
 
-  private static void request(String message) {
+  private static void request(String request) {
     // 클라이언트가 서버에 stop 명령을 보내면 다음 변수를 true로 변경한다.
     boolean stop = false;
 
@@ -49,12 +54,19 @@ public class ClientApp {
         PrintWriter out = new PrintWriter(socket.getOutputStream());
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-      out.println(message);
+      // => 서버에 클라이언트 아이디를 보낸다.
+      out.println(clientId);
+      out.flush();
+      // => 서버에서 보낸 클라이언트 아이디를 읽는다.
+      clientId = Long.parseLong(in.readLine());
+
+      out.println(request);
       out.flush();
 
       receiveResponse(out, in);
 
-      if (message.equalsIgnoreCase("stop")) {
+
+      if (request.equalsIgnoreCase("stop")) {
         stop = true;
       }
     } catch (Exception e) {
