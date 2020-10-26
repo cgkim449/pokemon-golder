@@ -10,9 +10,9 @@ import pokemon.golder.server.util.Prompt;
 public class ProjectUpdateCommand implements Command {
 
   List<Project> projectList;
-  UserListCommand memberListCommand;
+  MemberListCommand memberListCommand;
 
-  public ProjectUpdateCommand(List<Project> list, UserListCommand memberListCommand) {
+  public ProjectUpdateCommand(List<Project> list, MemberListCommand memberListCommand) {
     this.projectList = list;
     this.memberListCommand = memberListCommand;
   }

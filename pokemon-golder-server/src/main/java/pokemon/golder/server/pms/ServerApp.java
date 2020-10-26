@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +29,7 @@ public class ServerApp {
   ExecutorService threadPool = Executors.newCachedThreadPool();
 
   // 옵저버와 공유할 맵 객체
-  static Map<String,Object> context = new HashMap<>();
+  static Map<String,Object> context = new Hashtable<>();
 
   // 옵저버를 보관할 컬렉션 객체
   List<ApplicationContextListener> listeners = new ArrayList<>();
@@ -132,9 +132,8 @@ public class ServerApp {
 
       if (request.equals("init")) { // 서버 초기화면 처음에만 딱 한번 송신
         out.println(" ");
-        out.println("포켓몬 Golder");
-        out.println("새로운 모험을 시작하다 '/user/add'");
-        out.println("모험을 계속하다 '/user/signIn'");
+        out.println("회원가입 : /signUp");
+        out.println("로그인 : /signIn");
         out.println(" ");
         out.println();
         out.flush();

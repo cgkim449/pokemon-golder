@@ -15,22 +15,21 @@ import java.util.Map;
 import com.google.gson.Gson;
 import pokemon.golder.server.context.ApplicationContextListener;
 import pokemon.golder.server.pms.domain.Board;
-import pokemon.golder.server.pms.domain.Login;
+import pokemon.golder.server.pms.domain.Member;
 import pokemon.golder.server.pms.domain.Project;
+import pokemon.golder.server.pms.domain.SignIn;
 import pokemon.golder.server.pms.domain.Task;
-import pokemon.golder.server.pms.domain.User;
 
 // 게시물, 회원, 프로젝트, 작업 데이터를 파일에서 로딩하고 파일로 저장하는 일을 한다.
 public class DataHandlerListener implements ApplicationContextListener {
 
-  User user = new User(); 
-  Login login = new Login(); 
+  SignIn signIn = new SignIn();
+
+  List<Member> memberList = new LinkedList<>();
+  File memberFile = new File("./member.json"); // 회원을 저장할 파일 정보
 
   List<Board> boardList = new ArrayList<>();
   File boardFile = new File("./board.json"); // 게시글을 저장할 파일 정보
-
-  List<User> userList = new LinkedList<>();
-  File userFile = new File("./user.json"); // 회원을 저장할 파일 정보
 
   List<Project> projectList = new LinkedList<>();
   File projectFile = new File("./project.json"); // 프로젝트를 저장할 파일 정보
@@ -43,18 +42,16 @@ public class DataHandlerListener implements ApplicationContextListener {
     // 애플리케이션의 서비스가 시작되면 먼저 파일에서 데이터를 로딩한다.
     // 파일에서 데이터 로딩
     loadData(boardList, boardFile, Board[].class);
-    loadData(userList, userFile, User[].class);
+    loadData(memberList, memberFile, Member[].class);
     loadData(projectList, projectFile, Project[].class);
     loadData(taskList, taskFile, Task[].class);
 
     // 옵저버가 파일에서 데이터(게시글,회원,프로젝트,작업)를 읽어
     // List 컬렉션에 저장한 다음,
     // 발행자(App 객체)가 사용할 수 있도록 맵 객체에 담아서 공유한다.
-    context.put("user", user);
-    context.put("login", login);
-
+    context.put("signIn", signIn);
     context.put("boardList", boardList);
-    context.put("userList", userList);
+    context.put("memberList", memberList);
     context.put("projectList", projectList);
     context.put("taskList", taskList);
   }
@@ -64,7 +61,7 @@ public class DataHandlerListener implements ApplicationContextListener {
     // 애플리케이션 서비스가 종료되면 컬렉션에 보관된 객체를 파일에 저장한다.
     // 데이터를 파일에 저장
     saveData(boardList, boardFile);
-    saveData(userList, userFile);
+    saveData(memberList, memberFile);
     saveData(projectList, projectFile);
     saveData(taskList, taskFile);
   }

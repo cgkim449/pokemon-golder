@@ -10,9 +10,9 @@ import pokemon.golder.server.util.Prompt;
 public class TaskUpdateCommand implements Command {
 
   List<Task> taskList;
-  UserListCommand memberListCommand;
+  MemberListCommand memberListCommand;
 
-  public TaskUpdateCommand(List<Task> list, UserListCommand memberListCommand) {
+  public TaskUpdateCommand(List<Task> list, MemberListCommand memberListCommand) {
     this.taskList = list;
     this.memberListCommand = memberListCommand;
   }
