@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +29,7 @@ public class ServerApp {
   ExecutorService threadPool = Executors.newCachedThreadPool();
 
   // 옵저버와 공유할 맵 객체
-  static Map<String,Object> context = new Hashtable<>();
+  static Map<String,Object> context = new HashMap<>();
 
   // 옵저버를 보관할 컬렉션 객체
   List<ApplicationContextListener> listeners = new ArrayList<>();

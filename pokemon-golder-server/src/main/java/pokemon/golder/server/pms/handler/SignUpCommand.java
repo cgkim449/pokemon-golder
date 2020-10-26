@@ -46,7 +46,7 @@ public class SignUpCommand implements Command {
       member.setPhoto(Prompt.inputString("사진? ", out, in));
       member.setTel(Prompt.inputString("전화? ", out, in));
       member.setRegisteredDate(new java.sql.Date(System.currentTimeMillis()));
-      member.setAdmin(1);
+      member.setAdmin(0);
       memberList.add(member);
 
       out.println("회원가입이 완료되었습니다.");

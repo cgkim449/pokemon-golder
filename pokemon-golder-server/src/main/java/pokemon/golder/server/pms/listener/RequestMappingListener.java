@@ -6,7 +6,6 @@ import pokemon.golder.server.context.ApplicationContextListener;
 import pokemon.golder.server.pms.domain.Board;
 import pokemon.golder.server.pms.domain.Member;
 import pokemon.golder.server.pms.domain.Project;
-import pokemon.golder.server.pms.domain.SignIn;
 import pokemon.golder.server.pms.domain.Task;
 import pokemon.golder.server.pms.handler.BoardAddCommand;
 import pokemon.golder.server.pms.handler.BoardDeleteCommand;
@@ -41,11 +40,25 @@ public class RequestMappingListener implements ApplicationContextListener {
   @Override
   public void contextInitialized(Map<String,Object> context) {
     // 옵저버가 작업한 결과를 맵에서 꺼낸다.
-    SignIn signIn = (SignIn) context.get("signIn");
+    Member member = (Member) context.get("member");
+
     List<Board> boardList = (List<Board>) context.get("boardList");
     List<Member> memberList = (List<Member>) context.get("memberList");
     List<Project> projectList = (List<Project>) context.get("projectList");
     List<Task> taskList = (List<Task>) context.get("taskList");
+
+    MemberListCommand memberListCommand = new MemberListCommand(memberList,member);
+    context.put("/member/add", new MemberAddCommand(memberList,member));
+    context.put("/member/list", memberListCommand);
+    context.put("/member/detail", new MemberDetailCommand(memberList,member));
+    context.put("/member/update", new MemberUpdateCommand(memberList,member));
+    context.put("/member/delete", new MemberDeleteCommand(memberList,member));
+
+    context.put("/signIn", new SignInCommand(member, memberList));
+    context.put("/signOut", new SignOutCommand(member, memberList));
+    context.put("/signUp", new SignUpCommand(memberList));
+
+
 
     context.put("/board/add", new BoardAddCommand(boardList));
     context.put("/board/list", new BoardListCommand(boardList));
@@ -53,16 +66,6 @@ public class RequestMappingListener implements ApplicationContextListener {
     context.put("/board/update", new BoardUpdateCommand(boardList));
     context.put("/board/delete", new BoardDeleteCommand(boardList));
 
-    MemberListCommand memberListCommand = new MemberListCommand(memberList,signIn);
-    context.put("/member/add", new MemberAddCommand(memberList,signIn));
-    context.put("/member/list", memberListCommand);
-    context.put("/member/detail", new MemberDetailCommand(memberList,signIn));
-    context.put("/member/update", new MemberUpdateCommand(memberList,signIn));
-    context.put("/member/delete", new MemberDeleteCommand(memberList,signIn));
-
-    context.put("/signIn", new SignInCommand(signIn, memberList));
-    context.put("/signOut", new SignOutCommand(signIn));
-    context.put("/signUp", new SignUpCommand(memberList));
 
     context.put("/project/add", new ProjectAddCommand(projectList, memberListCommand));
     context.put("/project/list", new ProjectListCommand(projectList));

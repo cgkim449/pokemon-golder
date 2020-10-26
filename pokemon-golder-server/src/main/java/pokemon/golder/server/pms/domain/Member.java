@@ -13,6 +13,7 @@ public class Member {
   private String tel;
   private Date registeredDate;
   private int admin;
+  private int signIn;
 
   public int getNo() {
     return no;
@@ -61,5 +62,11 @@ public class Member {
   }
   public void setAdmin(int admin) {
     this.admin = admin;
+  }
+  public int getSignIn() {
+    return signIn;
+  }
+  public void setSignIn(int signIn) {
+    this.signIn = signIn;
   }
 }

@@ -4,30 +4,30 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.List;
 import pokemon.golder.server.pms.domain.Member;
-import pokemon.golder.server.pms.domain.SignIn;
 import pokemon.golder.server.util.Prompt;
 
 public class MemberUpdateCommand implements Command {
 
   List<Member> memberList;
-  SignIn signIn;
+  Member member;
 
-  public MemberUpdateCommand(List<Member> list, SignIn signIn) {
-    this.signIn = signIn;
+  public MemberUpdateCommand(List<Member> list, Member member) {
+    this.member = member;
     this.memberList = list;
   }
 
   @Override
   public void execute(PrintWriter out, BufferedReader in) {
-    if (signIn.getAdmin() != 0) {
-      out.print("권한이 없습니다.");
-      out.println();
-      out.flush();
-      return;
-    }
+    //    if (member.getAdmin() != 1) {
+    //      out.print("권한이 없습니다.");
+    //      out.println();
+    //      out.flush();
+    //      return;
+    //    }
     try {
       out.println("[회원 변경]");
       int no = Prompt.inputInt("번호? ", out, in);
+
       Member member = findByNo(no);
 
       if (member == null) {
