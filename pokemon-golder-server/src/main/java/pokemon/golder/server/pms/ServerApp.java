@@ -23,16 +23,21 @@ import pokemon.golder.server.pms.listener.RequestMappingListener;
 
 public class ServerApp {
 
-  //각 클라이언트의 로그인 정보를 보관할 맵 객체
-  // => Map<clientID, result>
-  static Map<Long, Member> signInContext = new HashMap<>();
-
   // 클라이언트가 "stop" 명령을 보내면 이 값이 true로 변경된다.
   // - 이 값이 true 이면 다음 클라이언트 접속할 때 서버를 종료한다.
   static boolean stop = false;
 
+
   // 스레드풀 준비
   ExecutorService threadPool = Executors.newCachedThreadPool();
+
+
+
+  //각 클라이언트의 로그인 정보를 보관할 맵 객체
+  // => Map<clientID, result>
+  static Map<Long, Member> signInContext = new HashMap<>();
+
+
 
   // 옵저버와 공유할 맵 객체
   static Map<String,Object> context = new Hashtable<>();
@@ -124,6 +129,7 @@ public class ServerApp {
     server.service(8888);
   }
 
+  @SuppressWarnings("unchecked")
   private static void handleClient(Socket clientSocket) {
     InetAddress address = clientSocket.getInetAddress();
     System.out.printf("클라이언트(%s)가 연결되었습니다.\n",
@@ -139,16 +145,15 @@ public class ServerApp {
       long clientId = Long.parseLong(in.readLine());
 
       // 클라이언트의 로그인 정보 꺼내기
-      Member member = signInContext.get(clientId);
-      Member member1 = new Member();
+      Member client = signInContext.get(clientId);
 
-      if (member != null) {
+      if (client != null) {
         System.out.printf("%d 기존 고객!\n", clientId);
-        member1 = member;
       } else {
         // 해당 클라이언트가 방문한적이 없다면, 새 클라이언트 아이디를 발급한다.
         clientId = System.currentTimeMillis();
         System.out.printf("%d 신규 고객!\n", clientId);
+        client = new Member();
       }
       out.println(clientId);
       out.flush();
@@ -156,19 +161,18 @@ public class ServerApp {
       // 클라이언트가 보낸 요청을 읽는다.
       String request = in.readLine();
 
-
-      //      if (request.equals("init")) { // 서버 초기화면 처음에만 딱 한번 송신
-      //        out.println(" ");
-      //        out.println("회원가입 : /signUp");
-      //        out.println("로그인 : /signIn");
-      //        out.println(" ");
-      //        out.println();
-      //        out.flush();
-      //        return;
-      //      }
-
       if (request.equalsIgnoreCase("stop")) {
+
         stop = true; // 서버의 상태를 멈추라는 의미로 true로 설정한다.
+
+        for (int i = 0; i < ((List<Member>)context.get("memberList")).size(); i++) {
+          Member member = ((List<Member>)context.get("memberList")).get(i);
+          if (member.getName().equals(client.getName())) {
+            member.setSignIn(0);
+          }
+        }
+        //        signInContext.remove(clientId);
+
         out.println("서버를 종료하는 중입니다!");
         out.println();
         out.flush();
@@ -177,13 +181,11 @@ public class ServerApp {
 
       Command command = (Command) context.get(request);
       if (command != null) {
-        command.execute(out, in, signInContext, clientId, member1);
+        command.execute(out, in, signInContext, clientId, client);
       } else {
         out.println("해당 명령을 처리할 수 없습니다!");
       }
 
-
-      // 응답의 끝을 알리는 빈 문자열을 보낸다.!!! 커맨드끝나고! 그래서 커맨드안에 이거 굳이 할필요 ㄴㄴ?
       out.println();
       out.flush();
 

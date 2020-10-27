@@ -17,10 +17,10 @@ public class MemberDetailCommand implements Command {
 
   @Override
   public void execute(PrintWriter out, BufferedReader in,
-      Map<Long,Member> signInContext, long clientId, Member member1) {
-    if (member1.getAdmin() != 1) {
+      Map<Long,Member> signInContext, long clientId, Member client) {
+    if (client.getAdmin() != 1) {
       out.print("권한이 없습니다.");
-      signInContext.put(clientId, member1);
+      signInContext.put(clientId, client);
       return;
     }
     try {
@@ -30,7 +30,7 @@ public class MemberDetailCommand implements Command {
 
       if (member == null) {
         out.println("해당 번호의 회원이 없습니다.");
-        signInContext.put(clientId, member1);
+        signInContext.put(clientId, client);
         return;
       }
 
@@ -39,7 +39,7 @@ public class MemberDetailCommand implements Command {
       out.printf("사진: %s\n", member.getPhoto());
       out.printf("전화: %s\n", member.getTel());
       out.printf("등록일: %s\n", member.getRegisteredDate());
-      signInContext.put(clientId, member1);
+      signInContext.put(clientId, client);
 
     } catch (Exception e) {
       out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());

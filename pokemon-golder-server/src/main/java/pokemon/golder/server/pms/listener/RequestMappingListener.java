@@ -5,6 +5,7 @@ import java.util.Map;
 import pokemon.golder.server.context.ApplicationContextListener;
 import pokemon.golder.server.pms.domain.Board;
 import pokemon.golder.server.pms.domain.Member;
+import pokemon.golder.server.pms.domain.Pokemon;
 import pokemon.golder.server.pms.domain.Project;
 import pokemon.golder.server.pms.domain.Task;
 import pokemon.golder.server.pms.handler.BoardAddCommand;
@@ -13,12 +14,17 @@ import pokemon.golder.server.pms.handler.BoardDetailCommand;
 import pokemon.golder.server.pms.handler.BoardListCommand;
 import pokemon.golder.server.pms.handler.BoardUpdateCommand;
 import pokemon.golder.server.pms.handler.CalculatorCommand;
-import pokemon.golder.server.pms.handler.HelloCommand;
+import pokemon.golder.server.pms.handler.HomeCommand;
 import pokemon.golder.server.pms.handler.MemberAddCommand;
 import pokemon.golder.server.pms.handler.MemberDeleteCommand;
 import pokemon.golder.server.pms.handler.MemberDetailCommand;
 import pokemon.golder.server.pms.handler.MemberListCommand;
 import pokemon.golder.server.pms.handler.MemberUpdateCommand;
+import pokemon.golder.server.pms.handler.PokemonAddCommand;
+import pokemon.golder.server.pms.handler.PokemonDeleteCommand;
+import pokemon.golder.server.pms.handler.PokemonDetailCommand;
+import pokemon.golder.server.pms.handler.PokemonListCommand;
+import pokemon.golder.server.pms.handler.PokemonUpdateCommand;
 import pokemon.golder.server.pms.handler.ProjectAddCommand;
 import pokemon.golder.server.pms.handler.ProjectDeleteCommand;
 import pokemon.golder.server.pms.handler.ProjectDetailCommand;
@@ -39,11 +45,20 @@ public class RequestMappingListener implements ApplicationContextListener {
   @SuppressWarnings("unchecked")
   @Override
   public void contextInitialized(Map<String,Object> context) {
+
     // 옵저버가 작업한 결과를 맵에서 꺼낸다.
+    List<Pokemon> pokemonList = (List<Pokemon>) context.get("pokemonList");
     List<Board> boardList = (List<Board>) context.get("boardList");
     List<Member> memberList = (List<Member>) context.get("memberList");
     List<Project> projectList = (List<Project>) context.get("projectList");
     List<Task> taskList = (List<Task>) context.get("taskList");
+
+    PokemonListCommand pokemonListCommand = new PokemonListCommand(pokemonList);
+    context.put("/pokemon/add", new PokemonAddCommand(pokemonList));
+    context.put("/pokemon/list", pokemonListCommand);
+    context.put("/pokemon/detail", new PokemonDetailCommand(pokemonList));
+    context.put("/pokemon/update", new PokemonUpdateCommand(pokemonList));
+    context.put("/pokemon/delete", new PokemonDeleteCommand(pokemonList));
 
     MemberListCommand memberListCommand = new MemberListCommand(memberList);
     context.put("/member/add", new MemberAddCommand(memberList));
@@ -56,7 +71,7 @@ public class RequestMappingListener implements ApplicationContextListener {
     context.put("/signOut", new SignOutCommand(memberList));
     context.put("/signUp", new SignUpCommand(memberList));
 
-
+    context.put("/home", new HomeCommand());
 
     context.put("/board/add", new BoardAddCommand(boardList));
     context.put("/board/list", new BoardListCommand(boardList));
@@ -76,8 +91,6 @@ public class RequestMappingListener implements ApplicationContextListener {
     context.put("/task/detail", new TaskDetailCommand(taskList));
     context.put("/task/update", new TaskUpdateCommand(taskList, memberListCommand));
     context.put("/task/delete", new TaskDeleteCommand(taskList));
-
-    context.put("/hello", new HelloCommand());
 
     context.put("/calc", new CalculatorCommand());
   }

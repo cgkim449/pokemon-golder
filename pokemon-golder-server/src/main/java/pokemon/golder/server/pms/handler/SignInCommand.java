@@ -16,17 +16,17 @@ public class SignInCommand implements Command {
   }
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in, 
-      Map<Long,Member> signInContext, long clientId, Member member1) {
+  public void execute(PrintWriter out, BufferedReader in,
+      Map<Long,Member> signInContext, long clientId, Member client) {
     try {
       Member member;
 
       out.println("[로그인] ");
 
-      if (member1.getSignIn() == 1) {
+      if (client.getSignIn() == 1) {
         out.println("이미 로그인 되어있습니다.");
         out.println(" ");
-        signInContext.put(clientId, member1);
+        signInContext.put(clientId, client);
         return;
       }
 
@@ -40,7 +40,7 @@ public class SignInCommand implements Command {
           } else {
             out.println("로그인을 취소합니다.");
             out.println(" ");
-            signInContext.put(clientId, member1);
+            signInContext.put(clientId, client);
             return;
           }
         } else {
@@ -58,7 +58,7 @@ public class SignInCommand implements Command {
             continue;
           } else {
             out.println("로그인을 취소합니다.");
-            signInContext.put(clientId, member1);
+            signInContext.put(clientId, client);
             return;
           }
         } else {
@@ -66,13 +66,13 @@ public class SignInCommand implements Command {
         }
       }
       out.println(" ");
-      out.printf("%s님 안녕하세요.", member.getName());
+      out.printf("%s님 안녕하세요.\n", member.getName());
       member.setSignIn(1);
-      member1.setSignIn(1);
-      member1.setName(member.getName());
-      member1.setNo(member.getNo());
-      member1.setAdmin((member.getAdmin()));
-      signInContext.put(clientId, member1);
+      client.setSignIn(1);
+      client.setName(member.getName());
+      client.setNo(member.getNo());
+      client.setAdmin((member.getAdmin()));
+      signInContext.put(clientId, client);
     } catch (Exception e) {
       out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
     }

@@ -6,13 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import pokemon.golder.server.pms.domain.Member;
+import pokemon.golder.server.pms.domain.Pokemon;
 
-public class MemberListCommand implements Command {
+public class PokemonListCommand implements Command {
 
-  List<Member> memberList;
+  List<Pokemon> pokemonList;
 
-  public MemberListCommand(List<Member> list) {
-    this.memberList = list;
+  public PokemonListCommand(List<Pokemon> list) {
+    this.pokemonList = list;
   }
 
   @Override
@@ -23,32 +24,27 @@ public class MemberListCommand implements Command {
       signInContext.put(clientId, client);
       return;
     }
-    out.println("[회원 목록]");
+    out.println("[포켓몬 목록]");
 
     // 전체 목록을 조회할 때 `Iterator` 객체를 사용한다.
     // 만약 목록의 일부만 조회하면다면 인덱스를 직접 다루는 이전 방식을 사용해야 한다.
-    Iterator<Member> iterator = memberList.iterator();
+    Iterator<Pokemon> iterator = pokemonList.iterator();
 
-    out.println("번호, 이름, 이메일, 전화번호, 가입일, 관리자, 로그인상태");
     while (iterator.hasNext()) {
-      Member member = iterator.next();
-      out.printf("%d, %s, %s, %s, %s, %d, %d\n",
-          member.getNo(),
-          member.getName(),
-          member.getEmail(),
-          member.getTel(),
-          member.getRegisteredDate(),
-          member.getAdmin(),
-          member.getSignIn());
+      Pokemon pokemon = iterator.next();
+      out.println("번호, 이름");
+      out.printf("%d, %s\n",
+          pokemon.getNo(),
+          pokemon.getName());
     }
     signInContext.put(clientId, client);
   }
 
-  public Member findByName(String name) {
-    for (int i = 0; i < memberList.size(); i++) {
-      Member member = memberList.get(i);
-      if (member.getName().equals(name)) {
-        return member;
+  public Pokemon findByName(String name) {
+    for (int i = 0; i < pokemonList.size(); i++) {
+      Pokemon pokemon = pokemonList.get(i);
+      if (pokemon.getName().equals(name)) {
+        return pokemon;
       }
     }
     return null;

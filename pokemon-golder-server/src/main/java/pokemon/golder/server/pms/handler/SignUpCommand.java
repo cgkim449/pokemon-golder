@@ -3,6 +3,7 @@ package pokemon.golder.server.pms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 import pokemon.golder.server.pms.domain.Member;
 import pokemon.golder.server.util.Prompt;
 
@@ -15,7 +16,8 @@ public class SignUpCommand implements Command {
   }
 
   @Override
-  public void execute(PrintWriter out, BufferedReader in) {
+  public void execute(PrintWriter out, BufferedReader in,
+      Map<Long,Member> signInContext, long clientId, Member client) {
     try {
       out.println("[회원 가입]");
 
@@ -31,7 +33,7 @@ public class SignUpCommand implements Command {
           } else {
             out.println("회원가입을 취소합니다.");
             out.println(" ");
-            out.flush();
+            signInContext.put(clientId, client);
             return;
           }
         } else {
@@ -46,13 +48,11 @@ public class SignUpCommand implements Command {
       member.setPhoto(Prompt.inputString("사진? ", out, in));
       member.setTel(Prompt.inputString("전화? ", out, in));
       member.setRegisteredDate(new java.sql.Date(System.currentTimeMillis()));
-      member.setAdmin(0);
       memberList.add(member);
 
       out.println("회원가입이 완료되었습니다.");
       out.println(" ");
-      out.println();
-      out.flush();
+      signInContext.put(clientId, client);
 
     } catch (Exception e) {
       out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());

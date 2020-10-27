@@ -10,7 +10,8 @@ public class ClientApp {
 
   static String host;
   static int port;
-  static int init = 0;
+
+
   // 서버에서 이 클라이언트를 구분할 때 사용하는 번호이다.
   // => 0 번으로 서버에 요청하면, 서버가 신규 번호를 발급해 줄 것이다.
   static long clientId = 0;
@@ -27,11 +28,6 @@ public class ClientApp {
 
 
     while (true) {
-      //      if (init == 0) { // 서버 초기화면 처음에만 딱 한번 수신
-      //        init++;
-      //        request("init");
-      //      }
-
       String input = Prompt.inputString("명령> ");
       if (input.equalsIgnoreCase("quit"))
         break;

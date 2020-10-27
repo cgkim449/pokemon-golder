@@ -17,10 +17,10 @@ public class MemberAddCommand implements Command {
 
   @Override
   public void execute(PrintWriter out, BufferedReader in,
-      Map<Long,Member> signInContext, long clientId, Member member1) {
-    if (member1.getAdmin() != 1) {
+      Map<Long,Member> signInContext, long clientId, Member client) {
+    if (client.getAdmin() != 1) {
       out.print("권한이 없습니다.");
-      signInContext.put(clientId, member1);
+      signInContext.put(clientId, client);
       return;
     }
     try {
@@ -36,7 +36,7 @@ public class MemberAddCommand implements Command {
       member.setRegisteredDate(new java.sql.Date(System.currentTimeMillis()));
 
       memberList.add(member);
-      signInContext.put(clientId, member1);
+      signInContext.put(clientId, client);
 
     } catch (Exception e) {
       out.printf("작업 처리 중 오류 발생! - %s\n", e.getMessage());
