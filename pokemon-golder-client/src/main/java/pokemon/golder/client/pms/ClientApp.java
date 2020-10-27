@@ -29,10 +29,11 @@ public class ClientApp {
 
     while (true) {
       String input = Prompt.inputString("명령> ");
-      if (input.equalsIgnoreCase("quit"))
-        break;
 
       request(input);
+
+      if (input.equalsIgnoreCase("quit"))
+        break;
 
       if (input.equalsIgnoreCase("stop"))
         break;

@@ -20,7 +20,7 @@ public class PokemonUpdateCommand implements Command {
   public void execute(PrintWriter out, BufferedReader in,
       Map<Long,Member> signInContext, long clientId, Member client) {
     if (client.getAdmin() != 1) {
-      out.print("권한이 없습니다.");
+      out.println("권한이 없습니다.");
       signInContext.put(clientId, client);
       return;
     }
